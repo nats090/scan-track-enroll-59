@@ -1,54 +1,25 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, Settings, Users, Search, Facebook, Youtube, Phone } from 'lucide-react';
+import { LogIn, LogOut, Settings, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import collegeCampus from '@/assets/college-campus.png';
+import collegeHeader from '@/assets/college-header.png';
+import footerInfo from '@/assets/footer-info.png';
 
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-background border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">ND</span>
-            </div>
-            <h1 className="text-xl font-bold text-foreground">
-              NOTRE DAME OF KIDAPAWAN COLLEGE
-            </h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Search className="w-6 h-6 text-muted-foreground cursor-pointer" />
-            <Facebook className="w-6 h-6 text-muted-foreground cursor-pointer" />
-            <Youtube className="w-6 h-6 text-muted-foreground cursor-pointer" />
-            <Phone className="w-6 h-6 text-muted-foreground cursor-pointer" />
-          </div>
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center">
+          <img 
+            src={collegeHeader} 
+            alt="Notre Dame of Kidapawan College" 
+            className="h-16 w-auto"
+          />
         </div>
       </header>
-
-      {/* Navigation */}
-      <nav className="bg-primary">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div className="flex space-x-8">
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">Home</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">Academics</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">Admission</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">Student Services</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">Enrollment</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">Research</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors">SDG Hub</a>
-            </div>
-            <div className="flex space-x-4">
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors text-sm">Gmail</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors text-sm">Faculty Portal</a>
-              <a href="#" className="text-primary-foreground py-4 px-2 hover:bg-primary/80 transition-colors text-sm">Student Portal</a>
-            </div>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section with Background Image */}
       <div 
@@ -72,8 +43,8 @@ const HomePage = () => {
               <Link to="/check-in">
                 <Card className="hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white/95 backdrop-blur-sm cursor-pointer">
                   <CardHeader className="text-center">
-                    <LogIn size={48} className="mx-auto mb-2 text-primary" />
-                    <CardTitle className="text-2xl text-primary">Check In</CardTitle>
+                    <LogIn size={48} className="mx-auto mb-2 text-green-600" />
+                    <CardTitle className="text-2xl text-green-600">Check In</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-lg text-foreground">Enter the library</p>
@@ -86,8 +57,8 @@ const HomePage = () => {
               <Link to="/check-out">
                 <Card className="hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white/95 backdrop-blur-sm cursor-pointer">
                   <CardHeader className="text-center">
-                    <LogOut size={48} className="mx-auto mb-2 text-destructive" />
-                    <CardTitle className="text-2xl text-destructive">Check Out</CardTitle>
+                    <LogOut size={48} className="mx-auto mb-2 text-red-600" />
+                    <CardTitle className="text-2xl text-red-600">Check Out</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-lg text-foreground">Exit the library</p>
@@ -100,8 +71,8 @@ const HomePage = () => {
               <Link to="/admin">
                 <Card className="hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white/95 backdrop-blur-sm cursor-pointer">
                   <CardHeader className="text-center">
-                    <Settings size={48} className="mx-auto mb-2 text-accent" />
-                    <CardTitle className="text-2xl text-accent">Admin</CardTitle>
+                    <Settings size={48} className="mx-auto mb-2 text-blue-600" />
+                    <CardTitle className="text-2xl text-blue-600">Admin</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-lg text-foreground">View dashboard</p>
@@ -114,8 +85,8 @@ const HomePage = () => {
               <Link to="/staff">
                 <Card className="hover:shadow-2xl transition-all duration-300 transform hover:scale-105 bg-white/95 backdrop-blur-sm cursor-pointer">
                   <CardHeader className="text-center">
-                    <Users size={48} className="mx-auto mb-2 text-primary" />
-                    <CardTitle className="text-2xl text-primary">Library Staff</CardTitle>
+                    <Users size={48} className="mx-auto mb-2 text-purple-600" />
+                    <CardTitle className="text-2xl text-purple-600">Library Staff</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-lg text-foreground">Manage system</p>
@@ -128,17 +99,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Departments Banner */}
-      <div className="bg-secondary py-4">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center space-x-8 text-secondary-foreground font-semibold">
-            <span className="py-2">Business & Accountancy</span>
-            <span className="py-2">Engineering & Computer Education</span>
-            <span className="py-2">Teacher Education, Liberal Arts & Nursing</span>
-            <span className="py-2">Graduate School</span>
-          </div>
-        </div>
-      </div>
 
       {/* Instructions Section */}
       <div className="bg-background py-12">
@@ -195,14 +155,12 @@ const HomePage = () => {
 
       {/* Footer */}
       <footer className="bg-primary py-6">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center space-x-8 text-primary-foreground">
-            <a href="#" className="hover:text-primary-foreground/80 transition-colors">News & Updates</a>
-            <a href="#" className="hover:text-primary-foreground/80 transition-colors">Faculty Portal</a>
-            <a href="#" className="hover:text-primary-foreground/80 transition-colors">Student Portal</a>
-            <a href="#" className="hover:text-primary-foreground/80 transition-colors">E-Learning</a>
-            <a href="#" className="hover:text-primary-foreground/80 transition-colors">Web Opac</a>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center">
+          <img 
+            src={footerInfo} 
+            alt="Notre Dame of Kidapawan College Contact Information" 
+            className="h-20 w-auto"
+          />
         </div>
       </footer>
     </div>
