@@ -6,13 +6,16 @@ import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted to-accent/20 p-4 flex items-center justify-center">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl font-bold text-primary mb-2">
+            Notre Dame of Kidapawan College
+          </h2>
+          <h1 className="text-5xl font-bold text-foreground mb-4">
             Library Attendance System
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-muted-foreground">
             Choose your access level to continue
           </p>
         </div>
@@ -20,7 +23,7 @@ const HomePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Check In */}
           <Link to="/check-in">
-            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-green-500 text-white cursor-pointer">
+            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-primary text-primary-foreground cursor-pointer">
               <CardHeader className="text-center">
                 <LogIn size={48} className="mx-auto mb-2" />
                 <CardTitle className="text-2xl">Check In</CardTitle>
@@ -34,7 +37,7 @@ const HomePage = () => {
 
           {/* Check Out */}
           <Link to="/check-out">
-            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-red-500 text-white cursor-pointer">
+            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-destructive text-destructive-foreground cursor-pointer">
               <CardHeader className="text-center">
                 <LogOut size={48} className="mx-auto mb-2" />
                 <CardTitle className="text-2xl">Check Out</CardTitle>
@@ -48,7 +51,7 @@ const HomePage = () => {
 
           {/* Admin */}
           <Link to="/admin">
-            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-purple-500 text-white cursor-pointer">
+            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-accent text-accent-foreground cursor-pointer">
               <CardHeader className="text-center">
                 <Settings size={48} className="mx-auto mb-2" />
                 <CardTitle className="text-2xl">Admin</CardTitle>
@@ -62,7 +65,7 @@ const HomePage = () => {
 
           {/* Library Staff */}
           <Link to="/staff">
-            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-blue-500 text-white cursor-pointer">
+            <Card className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-secondary text-secondary-foreground cursor-pointer">
               <CardHeader className="text-center">
                 <Users size={48} className="mx-auto mb-2" />
                 <CardTitle className="text-2xl">Library Staff</CardTitle>
@@ -76,12 +79,12 @@ const HomePage = () => {
         </div>
 
         {/* Instructions */}
-        <div className="mt-12 bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-center mb-4">How to Use</h2>
+        <div className="mt-12 bg-card rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-center mb-4 text-card-foreground">How to Use</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-lg mb-2">For Students:</h3>
-              <ul className="space-y-2 text-gray-600">
+              <h3 className="font-semibold text-lg mb-2 text-card-foreground">For Students:</h3>
+              <ul className="space-y-2 text-muted-foreground">
                 <li>• Use "Check In" when entering the library</li>
                 <li>• Use "Check Out" when leaving the library</li>
                 <li>• Simply scan your student ID barcode</li>
@@ -89,8 +92,8 @@ const HomePage = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-lg mb-2">For Staff:</h3>
-              <ul className="space-y-2 text-gray-600">
+              <h3 className="font-semibold text-lg mb-2 text-card-foreground">For Staff:</h3>
+              <ul className="space-y-2 text-muted-foreground">
                 <li>• Admin: View simple dashboard overview</li>
                 <li>• Staff: Manage student accounts and reports</li>
                 <li>• Export attendance data by day or month</li>
