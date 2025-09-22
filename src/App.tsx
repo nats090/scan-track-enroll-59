@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { LibraryProvider } from "@/contexts/LibraryContext";
+import AuthGuard from "@/components/AuthGuard";
 import HomePage from "./pages/HomePage";
 import CheckInDashboard from "./pages/CheckInDashboard";
 import CheckOutDashboard from "./pages/CheckOutDashboard";
@@ -33,21 +34,23 @@ const App = () => {
         <LibraryProvider>
           <Toaster />
           <Sonner />
-          <HashRouter>
-            <div className="min-h-screen bg-background">
-              <main>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/check-in" element={<CheckInDashboard />} />
-                  <Route path="/check-out" element={<CheckOutDashboard />} />
-                  <Route path="/admin" element={<EnhancedAdminDashboard />} />
-                  <Route path="/staff" element={<EnhancedLibraryStaffPage />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-            </div>
-          </HashRouter>
+          <AuthGuard onAuthenticated={() => console.log('Authentication successful')}>
+            <HashRouter>
+              <div className="min-h-screen bg-background">
+                <main>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/check-in" element={<CheckInDashboard />} />
+                    <Route path="/check-out" element={<CheckOutDashboard />} />
+                    <Route path="/admin" element={<EnhancedAdminDashboard />} />
+                    <Route path="/staff" element={<EnhancedLibraryStaffPage />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+              </div>
+            </HashRouter>
+          </AuthGuard>
         </LibraryProvider>
       </TooltipProvider>
     </QueryClientProvider>
