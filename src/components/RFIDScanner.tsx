@@ -86,14 +86,39 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
 
   const initializeRFIDReader = async () => {
     try {
+      // Check Web Serial API support
       if (!('serial' in navigator)) {
         setRfidReaderStatus('error');
         toast({
-          title: "RFID Reader Error",
-          description: "Web Serial API not supported. Use Chrome/Edge browser.",
+          title: "Web Serial API Not Supported",
+          description: "Please use Chrome/Edge browser (version 89+) and enable Serial API in flags.",
           variant: "destructive",
         });
         return;
+      }
+
+      // Check if running in HTTPS context (required for Web Serial API)
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        setRfidReaderStatus('error');
+        toast({
+          title: "HTTPS Required",
+          description: "RFID scanner requires HTTPS or localhost environment.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Try to get available serial ports to check for existing connections
+      try {
+        const availablePorts = await navigator.serial.getPorts();
+        if (availablePorts.length > 0) {
+          console.log(`Found ${availablePorts.length} available serial port(s)`);
+          // Optionally auto-connect to the first available port
+          // You can uncomment this to auto-connect if preferred
+          // await connectExistingPort(availablePorts[0]);
+        }
+      } catch (portError) {
+        console.log('Could not check for existing ports:', portError);
       }
 
       setRfidReaderStatus('ready');
@@ -102,25 +127,21 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
         description: "Click 'Connect Reader' to connect your RFID device.",
       });
     } catch (error) {
+      console.error('RFID initialization error:', error);
       setRfidReaderStatus('error');
       toast({
         title: "RFID Reader Error",
-        description: "Failed to initialize RFID reader",
+        description: "Failed to initialize RFID reader. Check browser permissions.",
         variant: "destructive",
       });
     }
   };
 
-  const connectRFIDReader = async () => {
+  // Helper function to connect to an existing port
+  const connectExistingPort = async (port: SerialPort) => {
     try {
-      const port = await (navigator as any).serial.requestPort({
-        filters: [
-          { usbVendorId: 0x1FC9 }, // NXP (common RFID manufacturer)
-          { usbVendorId: 0x072F }, // Advanced Card Systems
-          { usbVendorId: 0x0BDA }, // Realtek (some RFID readers)
-        ]
-      });
-
+      console.log('Attempting to connect to existing port...');
+      
       await port.open({ 
         baudRate: 9600,
         dataBits: 8,
@@ -132,6 +153,77 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
       setSerialPort(port);
       setRfidReaderStatus('scanning');
       
+      const reader = port.readable.getReader();
+      setReader(reader);
+      startReading(reader);
+
+      toast({
+        title: "RFID Reader Auto-Connected",
+        description: "Previously paired RFID reader connected automatically.",
+      });
+    } catch (error) {
+      console.log('Auto-connect failed:', error);
+      // Don't show error toast for auto-connect failures
+    }
+  };
+
+  const connectRFIDReader = async () => {
+    try {
+      console.log('Requesting RFID reader connection...');
+      
+      // Request port with comprehensive filters for various RFID reader manufacturers
+      const port = await navigator.serial.requestPort({
+        filters: [
+          { usbVendorId: 0x1FC9 }, // NXP (common RFID manufacturer)
+          { usbVendorId: 0x072F }, // Advanced Card Systems Ltd
+          { usbVendorId: 0x0BDA }, // Realtek (some RFID readers)
+          { usbVendorId: 0x067B }, // Prolific Technology Inc
+          { usbVendorId: 0x10C4 }, // Silicon Labs (CP210x series)
+          { usbVendorId: 0x0403 }, // FTDI (FT232 series)
+          { usbVendorId: 0x1A86 }, // QinHeng Electronics (CH340/CH341)
+          { usbVendorId: 0x2341 }, // Arduino LLC
+          { usbVendorId: 0x16C0 }, // Van Ooijen Technische Informatica
+        ]
+      });
+
+      console.log('Port selected, opening connection...');
+
+      // Try different baud rates common for RFID readers
+      const baudRates = [9600, 115200, 38400, 19200, 57600];
+      let connected = false;
+
+      for (const baudRate of baudRates) {
+        try {
+          await port.open({ 
+            baudRate,
+            dataBits: 8,
+            parity: 'none',
+            stopBits: 1,
+            flowControl: 'none'
+          });
+          
+          console.log(`Successfully connected at ${baudRate} baud`);
+          connected = true;
+          break;
+        } catch (baudError) {
+          console.log(`Failed to connect at ${baudRate} baud:`, baudError);
+          if (baudRate !== baudRates[baudRates.length - 1]) {
+            try {
+              await port.close();
+            } catch (closeError) {
+              // Ignore close errors when trying different baud rates
+            }
+          }
+        }
+      }
+
+      if (!connected) {
+        throw new Error('Could not establish connection at any supported baud rate');
+      }
+
+      setSerialPort(port);
+      setRfidReaderStatus('scanning');
+      
       // Start reading from the RFID reader
       const reader = port.readable.getReader();
       setReader(reader);
@@ -139,13 +231,27 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
 
       toast({
         title: "RFID Reader Connected",
-        description: "Place an RFID card near the reader to scan.",
+        description: "Successfully connected! Place an RFID card near the reader to scan.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('RFID connection error:', error);
       setRfidReaderStatus('error');
+      
+      let errorMessage = "Failed to connect to RFID reader.";
+      
+      if (error.name === 'NotFoundError') {
+        errorMessage = "No RFID reader selected. Please try again and select your device.";
+      } else if (error.name === 'SecurityError') {
+        errorMessage = "Permission denied. Please allow access to the serial port.";
+      } else if (error.name === 'NetworkError') {
+        errorMessage = "Device connection failed. Check if RFID reader is properly connected.";
+      } else if (error.name === 'InvalidStateError') {
+        errorMessage = "Device is already in use or disconnected.";
+      }
+      
       toast({
         title: "Connection Failed",
-        description: "Failed to connect to RFID reader. Check device connection.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -468,14 +574,43 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
 
             {/* Connection Controls */}
             {!serialPort ? (
-              <Button
-                onClick={connectRFIDReader}
-                className="w-full mb-4"
-                variant="default"
-              >
-                <Wifi className="mr-2 h-4 w-4" />
-                Connect RFID Reader
-              </Button>
+              <div className="space-y-2">
+                <Button
+                  onClick={connectRFIDReader}
+                  className="w-full"
+                  variant="default"
+                >
+                  <Wifi className="mr-2 h-4 w-4" />
+                  Connect RFID Reader
+                </Button>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const availablePorts = await navigator.serial.getPorts();
+                      if (availablePorts.length > 0) {
+                        await connectExistingPort(availablePorts[0]);
+                      } else {
+                        toast({
+                          title: "No Paired Devices",
+                          description: "No previously paired RFID readers found. Use 'Connect RFID Reader' to pair a new device.",
+                        });
+                      }
+                    } catch (error) {
+                      toast({
+                        title: "Error",
+                        description: "Failed to check for existing RFID readers.",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                  className="w-full"
+                  variant="outline"
+                  size="sm"
+                >
+                  <Shield className="mr-2 h-4 w-4" />
+                  Check for Paired Devices
+                </Button>
+              </div>
             ) : (
               <Button
                 onClick={disconnectRFIDReader}
