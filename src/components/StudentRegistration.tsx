@@ -201,13 +201,21 @@ const form = useForm<RegistrationForm>({
             </div>
           </div>
 
-          {/* RFID Scanner */}
+          {/* RFID Code Input */}
           <div>
-            <RFIDScanner
-              onRFIDDetected={setRfidData}
-              isActive={true}
-              currentRFID={rfidData}
-            />
+            <Label className="text-base font-medium">RFID Code</Label>
+            <div className="mt-2">
+              <Input
+                type="text"
+                placeholder="Enter RFID code (e.g., 0005768022)"
+                value={rfidData}
+                onChange={(e) => setRfidData(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-sm text-muted-foreground mt-1">
+                Enter the RFID code for automatic attendance tracking
+              </p>
+            </div>
           </div>
 
           {/* Registration Form */}

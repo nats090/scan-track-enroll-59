@@ -252,6 +252,7 @@ const CheckOutPage = () => {
                 <RFIDScanner 
                   isActive={true} 
                   mode="check-out"
+                  onRFIDDetected={handleBarcodeDetected}
                 />
               </>
             ) : (

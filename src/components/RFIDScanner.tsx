@@ -304,26 +304,17 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
     const cleanData = data.trim().replace(/[\r\n]/g, '');
     
     if (cleanData.length >= 8) { // Valid RFID UID typically 8+ characters
-      const timestamp = Date.now();
-      const rfidData = `RFID:${cleanData.toUpperCase()}:${timestamp}`;
-      
-      setManualRFID(rfidData);
+      setManualRFID(cleanData.toUpperCase());
       setLastScanTime(new Date());
 
       // Handle different modes
-      if (mode === 'check-in' && onCheckIn) {
+      if (mode === 'check-in') {
         await handleCheckIn(cleanData.toUpperCase());
-      } else if (mode === 'check-out' && onCheckOut) {
+      } else if (mode === 'check-out') {
         await handleCheckOut(cleanData.toUpperCase());
-      } else if (mode === 'register' && onRegister) {
-        onRegister(rfidData);
-        toast({
-          title: "RFID Card Read Successfully",
-          description: `Card UID: ${cleanData.toUpperCase()}`,
-          duration: 3000,
-        });
       } else if (onRFIDDetected) {
-        onRFIDDetected(rfidData);
+        // For registration mode, just pass the clean RFID code
+        onRFIDDetected(cleanData.toUpperCase());
         toast({
           title: "RFID Card Read Successfully",
           description: `Card UID: ${cleanData.toUpperCase()}`,
@@ -485,18 +476,12 @@ const RFIDScanner: React.FC<RFIDScannerProps> = ({
         setLastScanTime(new Date());
 
         // Handle different modes for manual input too
-        if (mode === 'check-in' && onCheckIn) {
+        if (mode === 'check-in') {
           await handleCheckIn(cleanRFID.toUpperCase());
-        } else if (mode === 'check-out' && onCheckOut) {
+        } else if (mode === 'check-out') {
           await handleCheckOut(cleanRFID.toUpperCase());
-        } else if (mode === 'register' && onRegister) {
-          onRegister(formattedRFID);
-          toast({
-            title: "RFID Set Successfully",
-            description: `Card UID: ${cleanRFID.toUpperCase()}`,
-          });
         } else if (onRFIDDetected) {
-          onRFIDDetected(formattedRFID);
+          onRFIDDetected(cleanRFID.toUpperCase());
           toast({
             title: "RFID Set Successfully",
             description: `Card UID: ${cleanRFID.toUpperCase()}`,
